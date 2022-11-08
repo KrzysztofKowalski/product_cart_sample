@@ -9,7 +9,7 @@ import java.util.HashMap;
 
 public class ProductCartService {
 
-    private final int MAX_PRODUCT_LIMIT = 10;
+    private static final int MAX_PRODUCT_LIMIT = 10;
 
     public static boolean validateCart(ProductCart cart) {
         HashMap<ProductItem, Integer> cartItems = cart.getCartItems();
@@ -18,12 +18,16 @@ public class ProductCartService {
     }
 
     public static boolean validateBulkBuyLimit(ProductCart cart) throws BulkBuyLimitException {
-//        cart.getCartItems().
-        return false;
+        cart.getCartItems().entrySet().stream().forEach(f -> {
+            if (f.getValue() > MAX_PRODUCT_LIMIT) {
+                throw new BulkBuyLimitException();
+            }
+        });
+        return true;
     }
 
     public static boolean validateBulkBuyLimitCategory(ProductCart cart) throws BulkBuyLimitCategoryException {
-        return false;
+        return BulkBuyLimitCategoryService.validateBulkBuyLimitCategory(cart);
     }
 
 }

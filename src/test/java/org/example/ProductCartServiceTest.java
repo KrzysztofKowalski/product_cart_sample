@@ -9,6 +9,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.HashMap;
 
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
@@ -55,7 +56,29 @@ public class ProductCartServiceTest {
          Line-4 -> productid=4, category=Paracetamol, quantity=2
 
          */
-        boolean b = ProductCartService.validateBulkBuyLimit(productCart);
+        boolean b = ProductCartService.validateCart(productCart);
         assertTrue(b);
+    }
+
+    @Test
+    public void badPathTest() {
+        ProductCart productCart2 = new ProductCart();
+        HashMap<ProductItem, Integer> productItemIntegerHashMap = new HashMap<>();
+        ProductCategory paracetamol = new ProductCategory("Paracetamol");
+        ProductCategory analgesic = new ProductCategory("analgesic");
+        ProductCategory chocolate = new ProductCategory("chocolate");
+
+        ProductItem product1 = new ProductItem(paracetamol, 1L);
+        ProductItem product2 = new ProductItem(analgesic, 2L);
+        ProductItem product3 = new ProductItem(chocolate, 3L);
+        ProductItem product4 = new ProductItem(paracetamol, 4L);
+        productItemIntegerHashMap.put(product1, 3);
+        productItemIntegerHashMap.put(product2, 3);
+        productItemIntegerHashMap.put(product3, 80);
+        productItemIntegerHashMap.put(product4, 2);
+        productCart2.setCartItems(productItemIntegerHashMap);
+        boolean b = ProductCartService.validateCart(productCart);
+        assertFalse(b);
+
     }
 }
